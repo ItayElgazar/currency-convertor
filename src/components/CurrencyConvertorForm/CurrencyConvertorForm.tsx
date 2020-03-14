@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
+import { Convert } from '../../store/CurrencyConvertor/types';
 
 type CurrencyConvertorFormProps = {
-  onConvert: (convertInformation: any) => void;
+  onConvert: (convertInformation: Convert) => void;
 };
 
 const CurrencyConvertorForm: FC<CurrencyConvertorFormProps> = ({
