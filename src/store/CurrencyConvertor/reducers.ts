@@ -3,7 +3,8 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   convertCurrency,
   convertCurrencyStarted,
-  convertCurrencyConverted
+  convertCurrencyConverted,
+  convertCurrencyFailed
 } from './actions';
 
 const initialState: CurrencyConvertorState = {
@@ -13,6 +14,9 @@ const initialState: CurrencyConvertorState = {
     isLoading: false
   }
 };
+
+const calculateConversion = (exchangeRage: number, amount: number) =>
+  exchangeRage * amount;
 
 const currencyConvertorReducer = createReducer(initialState, {
   [convertCurrencyStarted.toString()]: state => ({
@@ -28,14 +32,22 @@ const currencyConvertorReducer = createReducer(initialState, {
     return {
       conversion: {
         ...payload,
-        convertedAmount: exchangeRate * amount
+        convertedAmount: calculateConversion(exchangeRate, amount)
       },
       actions: {
         ...state.actions,
         isLoading: false
       }
     };
-  }
+  },
+  [convertCurrencyFailed.toString()]: (state, { payload }) => ({
+    ...state,
+    actions: {
+      ...state.actions,
+      isLoading: false,
+      httpError: payload
+    }
+  })
 });
 
 export default currencyConvertorReducer;

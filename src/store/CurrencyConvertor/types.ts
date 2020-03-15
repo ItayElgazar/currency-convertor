@@ -1,10 +1,10 @@
-export type Convert = {
+export type ConvertEvent = {
   from: string;
   to: string;
   amount: string;
 };
 
-export type Conversion = Convert & {
+export type Conversion = ConvertEvent & {
   exchangeRate: string;
   convertedAmount: string;
   lastUpdated: Date;

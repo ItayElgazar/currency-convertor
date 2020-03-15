@@ -2,7 +2,7 @@ import { createAction, AnyAction } from '@reduxjs/toolkit';
 import API_CONFIG from '../../common/apiConfig';
 import fetchWrapper from '../../common/fetchWrapper';
 
-import { Convert, Conversion } from './types';
+import { ConvertEvent, Conversion } from './types';
 import { ThunkDispatch } from 'redux-thunk';
 
 const BASE_CONVERT_API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.functions.CURRENCY_EXCHANGE_RATE}`;
@@ -15,26 +15,36 @@ const convertCurrencyConverted = createAction(
     }
   })
 );
-const convertCurrencyFailed = createAction('currencyConvertor/convertFailed');
+const convertCurrencyFailed = createAction(
+  'currencyConvertor/convertFailed',
+  (errorMessage?: string) => ({
+    payload: errorMessage
+  })
+);
 
-const convertCurrency = ({ from, to, amount }: Convert) => async (
+const convertCurrency = ({ from, to, amount }: ConvertEvent) => async (
   dispatch: ThunkDispatch<{}, {}, AnyAction>
 ) => {
   dispatch(convertCurrencyStarted());
   try {
-    const response = await fetchWrapper<Conversion>(
-      buildConvertRequestUrl(from, to)
-    );
-    dispatch(
-      convertCurrencyConverted(buildConversionFromResponse(response, amount))
-    );
+    const response = await fetchWrapper<any>(buildConvertRequestUrl(from, to));
+    if (response['Error Message']) {
+      // the api server return 200 even if there is an error
+      const { 'Error Message': message } = response;
+
+      dispatch(convertCurrencyFailed(message));
+    } else {
+      dispatch(
+        convertCurrencyConverted(buildConversionFromResponse(response, amount))
+      );
+    }
   } catch (e) {
     dispatch(convertCurrencyFailed());
   }
 };
 
 const buildConvertRequestUrl = (from: string, to: string) =>
-  `${BASE_CONVERT_API_URL}&from_currency=${from}&to_currency=${to}&apikey=${API_CONFIG.key}`;
+  `${BASE_CONVERT_API_URL}&from_currency=${from}&to_currency=${to}&apikeys=${API_CONFIG.key}`;
 
 const buildConversionFromResponse = (
   response: any,
