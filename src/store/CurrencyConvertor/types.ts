@@ -1,12 +1,10 @@
 export type ConvertEvent = {
-  from: string;
-  to: string;
-  amount: string;
+  fromCurrency: string;
+  toCurrency: string;
 };
 
 export type Conversion = ConvertEvent & {
   exchangeRate: string;
-  convertedAmount: string;
   lastUpdated: Date;
 };
 

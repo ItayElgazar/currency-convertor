@@ -1,25 +1,24 @@
 import React, { useEffect } from 'react';
+import { Container } from '@material-ui/core';
+import { ConvertEvent } from '../store/CurrencyConvertor/types';
 import CurrencyConvertorForm from '../components/CurrencyConvertorForm';
-import { convertCurrency } from '../store/CurrencyConvertor/actions';
 import { useDispatch } from 'react-redux';
+import { convertCurrency } from '../store/CurrencyConvertor/actions';
 
 const CurrencyConvertor = () => {
   const dispatch = useDispatch();
-  const currencyConvertHandler = (convertInformation: any) => {
-    console.log(convertInformation);
+  const currencyConvertHandler = (convertInformation: ConvertEvent) => {
+    dispatch(convertCurrency(convertInformation));
   };
 
-  useEffect(() => {
-    dispatch(
-      convertCurrency({
-        from: 'EUR',
-        to: 'ILS',
-        amount: '400'
-      })
-    );
-  }, []);
-
-  return <CurrencyConvertorForm onConvert={currencyConvertHandler} />;
+  return (
+    <>
+      <br />
+      <Container maxWidth="md">
+        <CurrencyConvertorForm onConvert={currencyConvertHandler} />
+      </Container>
+    </>
+  );
 };
 
 export default CurrencyConvertor;
