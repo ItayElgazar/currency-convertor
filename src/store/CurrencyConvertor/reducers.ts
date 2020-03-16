@@ -1,9 +1,11 @@
-import { CurrencyConvertorState } from './types';
+import { CurrencyConvertorState, Conversion } from './types';
+
 import { createReducer } from '@reduxjs/toolkit';
 import {
   convertCurrencyStarted,
   convertCurrencyConverted,
-  convertCurrencyFailed
+  convertCurrencyFailed,
+  swapCurrencies
 } from './actions';
 
 const initialState: CurrencyConvertorState = {
@@ -39,7 +41,20 @@ const currencyConvertorReducer = createReducer(initialState, {
       isLoading: false,
       httpError: payload
     }
-  })
+  }),
+  [swapCurrencies.toString()]: (state, { payload }) => {
+    const conversion = state.conversion as Conversion;
+
+    return {
+      ...state,
+      conversion: {
+        ...conversion,
+        fromCurrency: conversion.toCurrency,
+        toCurrency: conversion.fromCurrency,
+        exchangeRate: 1 / conversion.exchangeRate
+      }
+    };
+  }
 });
 
 export default currencyConvertorReducer;

@@ -21,6 +21,7 @@ const convertCurrencyFailed = createAction(
     payload: errorMessage
   })
 );
+const swapCurrencies = createAction('currencyConvertor/swap');
 
 const convertCurrency = ({ fromCurrency, toCurrency }: ConvertEvent) => async (
   dispatch: ThunkDispatch<{}, {}, AnyAction>
@@ -30,11 +31,12 @@ const convertCurrency = ({ fromCurrency, toCurrency }: ConvertEvent) => async (
     const response = await fetchWrapper<any>(
       buildConvertRequestUrl(fromCurrency, toCurrency)
     );
-    if (response['Error Message']) {
+    console.log(response);
+    if (response['Error Message'] || response['Note']) {
       // the api server return 200 even if there is an error
-      const { 'Error Message': message } = response;
+      const { 'Error Message': message, Note } = response;
 
-      dispatch(convertCurrencyFailed(message));
+      dispatch(convertCurrencyFailed(message || Note));
     } else {
       dispatch(convertCurrencyConverted(buildConversionFromResponse(response)));
     }
@@ -64,6 +66,7 @@ const buildConversionFromResponse = (response: any): Partial<Conversion> => {
 
 export {
   convertCurrency,
+  swapCurrencies,
   convertCurrencyConverted,
   convertCurrencyStarted,
   convertCurrencyFailed

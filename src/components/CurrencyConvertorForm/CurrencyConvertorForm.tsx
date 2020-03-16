@@ -1,22 +1,23 @@
-import React, { FC, useState, useEffect, ChangeEvent } from 'react';
+import React, { FC, ChangeEvent } from 'react';
 import CurrencySelect from '../CurrencySelect/CurrencySelect';
-import { ConvertEvent } from '../../store/CurrencyConvertor/types';
 import {
-  Card,
-  CardContent,
   TextField,
-  CardHeader,
-  Container,
   makeStyles,
   Theme,
   createStyles,
-  Button,
   IconButton
 } from '@material-ui/core';
 import { SwapHoriz } from '@material-ui/icons';
 
 type CurrencyConvertorFormProps = {
-  onConvert: (convertInformation: ConvertEvent) => void;
+  onToCurrencyChange: (toCurrency: string) => void;
+  onSwap: () => void;
+  onFromCurrencyChange: (fromCurrency: string) => void;
+  onAmountChange: (amount: ChangeEvent<HTMLInputElement>) => void;
+  fromCurrency?: string;
+  toCurrency?: string;
+  amount: number;
+  disabled?: boolean;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,69 +40,52 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const CurrencyConvertorForm: FC<CurrencyConvertorFormProps> = ({
-  onConvert
+  onToCurrencyChange,
+  onFromCurrencyChange,
+  onAmountChange,
+  onSwap,
+  fromCurrency,
+  toCurrency,
+  amount,
+  disabled
 }) => {
   const classes = useStyles();
 
-  const [fromCurrency, setFromCurrency] = useState('EUR');
-  const [toCurrency, setToCurrency] = useState('ILS');
-
-  const handleFromCurrencyChange = (currency: string) => {
-    setFromCurrency(currency);
-  };
-
-  const handleToCurrencyChange = (currency: string) => {
-    setToCurrency(currency);
-  };
-
-  const handleSwap = () => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
-  };
-
-  useEffect(() => {
-    onConvert({
-      fromCurrency,
-      toCurrency
-    });
-  }, [fromCurrency, toCurrency, onConvert]);
-
-  console.log(fromCurrency, toCurrency);
   return (
-    <Container maxWidth="md" className={classes.root}>
-      <Card>
-        <CardHeader title="Currency Convertor" />
-        <CardContent>
-          <TextField
-            label="Amount"
-            defaultValue={1}
-            variant="outlined"
-            type="number"
-          />
+    <div className={classes.root}>
+      <TextField
+        label="Amount"
+        defaultValue={amount}
+        variant="outlined"
+        type="number"
+        onChange={onAmountChange}
+        disabled={disabled}
+      />
 
-          <CurrencySelect
-            label="From"
-            initialCurrency={fromCurrency}
-            onCurrencySelected={handleFromCurrencyChange}
-          />
-          <IconButton
-            className={classes.swap}
-            color="primary"
-            aria-label="Swap"
-            component="span"
-            onClick={handleSwap}
-          >
-            <SwapHoriz />
-          </IconButton>
+      <CurrencySelect
+        label="From"
+        initialCurrency={fromCurrency}
+        onCurrencySelected={onFromCurrencyChange}
+        disabled={disabled}
+      />
+      <IconButton
+        className={classes.swap}
+        color="primary"
+        aria-label="Swap"
+        component="span"
+        onClick={onSwap}
+        disabled={disabled}
+      >
+        <SwapHoriz />
+      </IconButton>
 
-          <CurrencySelect
-            label="To"
-            initialCurrency={toCurrency}
-            onCurrencySelected={handleToCurrencyChange}
-          />
-        </CardContent>
-      </Card>
-    </Container>
+      <CurrencySelect
+        label="To"
+        initialCurrency={toCurrency}
+        onCurrencySelected={onToCurrencyChange}
+        disabled={disabled}
+      />
+    </div>
   );
 };
 
