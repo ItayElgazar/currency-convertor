@@ -20,12 +20,14 @@ type CurrencySelectProps = {
   onCurrencySelected: (currency: string) => void;
   initialCurrency?: string;
   label?: string;
+  disabled?: boolean;
 };
 
 const CurrencySelect: FC<CurrencySelectProps> = ({
   onCurrencySelected,
   initialCurrency,
-  label
+  label,
+  disabled
 }) => {
   const [selectedCurrency, setSelectedCurrency] = useState(initialCurrency);
 
@@ -47,6 +49,7 @@ const CurrencySelect: FC<CurrencySelectProps> = ({
       helperText={label}
       variant="outlined"
       value={selectedCurrency}
+      disabled={disabled}
     >
       {CURRENCY_LIST.map(option => (
         <MenuItem key={option.code} value={option.code}>
