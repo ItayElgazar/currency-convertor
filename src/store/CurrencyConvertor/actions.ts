@@ -1,6 +1,5 @@
 import { createAction, AnyAction } from '@reduxjs/toolkit';
 import API_CONFIG from '../../common/apiConfig';
-import fetchWrapper from '../../common/fetchWrapper';
 
 import { ConvertEvent, Conversion } from './types';
 import { ThunkDispatch } from 'redux-thunk';
