@@ -14,7 +14,7 @@ const ErrorBoundary: FC<ErrorBoundaryProps> = ({ error, children }) =>
   );
 
 ErrorBoundary.propTypes = {
-  error: PropTypes.string.isRequired
+  error: PropTypes.string
 };
 
 export default ErrorBoundary;

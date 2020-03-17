@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -13,20 +13,16 @@ import {
   Box
 } from '@material-ui/core';
 import { RootState } from '../store';
+import useConversion from '../common/hooks/useConversion';
 import CurrencyConvertorForm from '../components/CurrencyConvertorForm';
-import {
-  convertCurrency,
-  swapCurrencies
-} from '../store/CurrencyConvertor/actions';
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
+import HistoryInsights from '../components/HistoryInsights/HistoryInsights';
+import { fetchHistoryInsights } from '../store/HistoryInsights/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       marginTop: theme.spacing(2)
-    },
-    spinner: {
-      margin: '0 auto'
     }
   })
 );
@@ -35,57 +31,49 @@ const CurrencyConvertor = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const {
-    actions: { isLoading, httpError },
-    conversion
+    actions: { isLoading, httpError }
   } = useSelector((state: RootState) => state.currencyConvertor);
-  const [fromCurrency, setFromCurrency] = useState('EUR');
-  const [toCurrency, setToCurrency] = useState('ILS');
-  const [amount, setAmount] = useState(1);
-  const [convertedAmount, setConvertedAmount] = useState(0);
+  const { actions: historyInsightsActions, insights } = useSelector(
+    (state: RootState) => state.historyInsights
+  );
+
+  const [
+    handleConversionChange,
+    handleAmountChange,
+    handleCurrenciesSwap,
+    fromCurrency,
+    toCurrency,
+    amount,
+    convertedAmount
+  ] = useConversion({
+    fromCurrency: 'EUR',
+    toCurrency: 'ILS',
+    amount: 1
+  });
 
   const handleFromCurrencyChange = (currency: string) => {
-    setFromCurrency(currency);
-    dispatch(convertCurrency({ fromCurrency: currency, toCurrency, amount }));
+    handleConversionChange('from', currency);
+    dispatch(fetchHistoryInsights({ fromCurrency: currency, toCurrency }));
   };
 
   const handleToCurrencyChange = (currency: string) => {
-    setToCurrency(currency);
-    dispatch(convertCurrency({ fromCurrency, toCurrency: currency, amount }));
-  };
-
-  const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const amount = Number(e.target.value || 1);
-    setAmount(amount);
+    handleConversionChange('to', currency);
+    dispatch(fetchHistoryInsights({ fromCurrency: currency, toCurrency }));
   };
 
   const handleSwap = () => {
-    setFromCurrency(toCurrency);
-    setToCurrency(fromCurrency);
-    dispatch(swapCurrencies());
-  };
-
-  const Loading = (
-    <Box textAlign="center">
-      <CircularProgress disableShrink />
-    </Box>
-  );
-
-  useEffect(() => {
+    handleCurrenciesSwap();
     dispatch(
-      convertCurrency({
-        fromCurrency: 'EUR',
-        toCurrency: 'ILS',
-        amount: 1
+      fetchHistoryInsights({
+        fromCurrency: toCurrency,
+        toCurrency: fromCurrency
       })
     );
-  }, [dispatch]);
+  };
 
   useEffect(() => {
-    if (conversion?.exchangeRate) {
-      const newConvertedAmount = amount * conversion.exchangeRate;
-      setConvertedAmount(Number(newConvertedAmount.toFixed(4)));
-    }
-  }, [conversion, amount]);
+    dispatch(fetchHistoryInsights({ fromCurrency, toCurrency }));
+  }, [dispatch, fromCurrency, toCurrency]);
 
   return (
     <>
@@ -105,19 +93,29 @@ const CurrencyConvertor = () => {
                 disabled={Boolean(httpError)}
               />
 
-              <ErrorBoundary error={httpError}>
+              <ErrorBoundary
+                error={httpError || historyInsightsActions.httpError}
+              >
                 {isLoading ? (
                   <Box textAlign="center">
-                    <CircularProgress disableShrink />
+                    <CircularProgress color="secondary" disableShrink />
                   </Box>
                 ) : (
                   <Typography variant="h4" component="p" align="center">
-                    {amount} {fromCurrency} = {convertedAmount} {toCurrency}
+                    {amount} {fromCurrency} ={' '}
+                    <Typography variant="h4" component="span" color="secondary">
+                      {convertedAmount}
+                    </Typography>{' '}
+                    {toCurrency}
                   </Typography>
                 )}
               </ErrorBoundary>
             </CardContent>
           </Card>
+
+          <Box marginTop={4}>
+            <HistoryInsights title="Conversion History" insights={insights} />
+          </Box>
         </Container>
       </Container>
     </>
