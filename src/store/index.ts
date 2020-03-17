@@ -8,4 +8,8 @@ const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
+export type StateActions = {
+  isLoading: boolean;
+  httpError: string | undefined;
+};
 export default store;

@@ -28,9 +28,9 @@ const convertCurrency = ({ fromCurrency, toCurrency }: ConvertEvent) => async (
 ) => {
   dispatch(convertCurrencyStarted());
   try {
-    const response = await fetchWrapper<any>(
+    const response = (await fetch(
       buildConvertRequestUrl(fromCurrency, toCurrency)
-    );
+    )) as any;
     console.log(response);
     if (response['Error Message'] || response['Note']) {
       // the api server return 200 even if there is an error
