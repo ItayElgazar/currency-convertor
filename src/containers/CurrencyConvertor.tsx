@@ -13,11 +13,12 @@ import {
   Box
 } from '@material-ui/core';
 import { RootState } from '../store';
+import { fetchHistoryInsights } from '../store/HistoryInsights/actions';
 import useConversion from '../common/hooks/useConversion';
+import ConversionResult from '../components/ConversionResult/ConversionResult';
 import CurrencyConvertorForm from '../components/CurrencyConvertorForm';
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary';
 import HistoryInsights from '../components/HistoryInsights/HistoryInsights';
-import { fetchHistoryInsights } from '../store/HistoryInsights/actions';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -30,9 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const CurrencyConvertor = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const {
-    actions: { isLoading, httpError }
-  } = useSelector((state: RootState) => state.currencyConvertor);
+  const { actions: currencyConvertorActions } = useSelector(
+    (state: RootState) => state.currencyConvertor
+  );
   const { actions: historyInsightsActions, insights } = useSelector(
     (state: RootState) => state.historyInsights
   );
@@ -90,31 +91,35 @@ const CurrencyConvertor = () => {
                 fromCurrency={fromCurrency}
                 toCurrency={toCurrency}
                 amount={amount}
-                disabled={Boolean(httpError)}
+                disabled={Boolean(currencyConvertorActions.httpError)}
               />
 
-              <ErrorBoundary
-                error={httpError || historyInsightsActions.httpError}
-              >
-                {isLoading ? (
+              <ErrorBoundary error={currencyConvertorActions.httpError}>
+                {currencyConvertorActions.isLoading ? (
                   <Box textAlign="center">
                     <CircularProgress color="secondary" disableShrink />
                   </Box>
                 ) : (
-                  <Typography variant="h4" component="p" align="center">
-                    {amount} {fromCurrency} ={' '}
-                    <Typography variant="h4" component="span" color="secondary">
-                      {convertedAmount}
-                    </Typography>{' '}
-                    {toCurrency}
-                  </Typography>
+                  convertedAmount && (
+                    <ConversionResult
+                      fromCurrency={fromCurrency}
+                      toCurrency={toCurrency}
+                      amount={amount}
+                      convertedAmount={convertedAmount}
+                    />
+                  )
                 )}
               </ErrorBoundary>
             </CardContent>
           </Card>
 
           <Box marginTop={4}>
-            <HistoryInsights title="Conversion History" insights={insights} />
+            <HistoryInsights
+              title="Conversion History"
+              insights={insights}
+              isLoading={historyInsightsActions.isLoading}
+              error={historyInsightsActions.httpError}
+            />
           </Box>
         </Container>
       </Container>
