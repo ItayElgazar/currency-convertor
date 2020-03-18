@@ -6,7 +6,7 @@ type ErrorBoundaryProps = {
 };
 const ErrorBoundary: FC<ErrorBoundaryProps> = ({ error, children }) =>
   error ? (
-    <Box margin="auto" color="text.secondary" border="1px solid #d8d8d8" p={2}>
+    <Box margin="auto" color="text.secondary" p={2}>
       <Typography color="secondary">{error}</Typography>
     </Box>
   ) : (
