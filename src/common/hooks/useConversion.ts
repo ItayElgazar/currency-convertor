@@ -113,8 +113,7 @@ const useConversion = (initialState: UseConversionProps): UseConversion => {
   };
 
   useEffect(() => {
-    initialDispatch();
-    if (conversion) {
+    if (conversion?.exchangeRate) {
       const newConvertedAmount = (amount * conversion.exchangeRate).toFixed(4);
       dispatchConversionState({
         type: 'conversion/setConvertedAmount',
@@ -122,6 +121,10 @@ const useConversion = (initialState: UseConversionProps): UseConversion => {
       });
     }
   }, [initialDispatch, conversion, amount]); // On conversion or change
+
+  useEffect(() => {
+    initialDispatch();
+  }, [initialDispatch]);
 
   return [
     handleCurrencyChange,
