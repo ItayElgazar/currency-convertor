@@ -14,7 +14,7 @@
 - I chose to use Material-UI to short the work time, but to be honest, it was longer then I expected, and for me, it doesn't feel very clean. However, I feel very comfortable writing in CSS3, SCSS (Sass), including SCSS Modules and other methodologies like BEM.
 - I personally like the self-explanatory code approach, and therefore avoid comments. However, I am happy to be flexible and, if required, add comments to my code in a working environment.
 - I know that the design is not 100%, that's just due to the limited time (The background, cards, separation of "widgets" for example). I preferred to have a working product.
-- I chose to follow the "feature/event" pattern of redux. see [https://redux.js.org/style-guide/style-guide/#model-actions-as-events-not-setters](here)
+- I chose to follow the "feature/event" pattern of redux. see [here](https://redux.js.org/style-guide/style-guide/#model-actions-as-events-not-setters)
 
 - The provided API (alphavantage) is very weird; when there are errors instead of throwing an error and returning 400/401/500 it returns 200. So the implementation on the frontend side might look a bit weird; also, the API returns some weird text objects instead of simple ones, so please be aware of :)
 
