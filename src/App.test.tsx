@@ -1,9 +1,10 @@
-// import React from 'react';
-// import { render } from '@testing-library/react';
-// import App from './App';
+import React from 'react';
+import { shallow } from 'enzyme';
+import App from './App';
+import CurrencyConvertor from './containers/CurrencyConvertor';
 
-// test('renders learn react link', () => {
-//   const { getByText } = render(<App />);
-//   const linkElement = getByText(/learn react/i);
-//   expect(linkElement).toBeInTheDocument();
-// });
+it('renders CurrencyConvertor container component', () => {
+  const wrapper = shallow(<App />);
+  const currencyConvertor = <CurrencyConvertor />;
+  expect(wrapper.contains(currencyConvertor)).toEqual(true);
+});

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#ConversionResult renders correctly 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-h4 MuiTypography-alignCenter"
+>
+  1
+   
+  EURO
+   =
+   
+  <span
+    className="MuiTypography-root MuiTypography-h4 MuiTypography-colorSecondary"
+  >
+    4
+  </span>
+   
+  ILS
+</p>
+`;
+
+exports[`#ConversionResult should render correctly 1`] = `
+<p
+  className="MuiTypography-root MuiTypography-h4 MuiTypography-alignCenter"
+>
+  1
+   
+  EURO
+   =
+   
+  <span
+    className="MuiTypography-root MuiTypography-h4 MuiTypography-colorSecondary"
+  >
+    4
+  </span>
+   
+  ILS
+</p>
+`;

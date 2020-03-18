@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#CurerncySelect renders correctly 1`] = `
+<div
+  className="MuiFormControl-root MuiTextField-root makeStyles-currencySelect-1"
+>
+  <label
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined"
+    data-shrink={false}
+  >
+    Select
+  </label>
+  <div
+    className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl"
+    onClick={[Function]}
+  >
+    <div
+      aria-haspopup="listbox"
+      aria-labelledby=" "
+      className="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onMouseDown={[Function]}
+      role="button"
+      tabIndex={0}
+    >
+      <span
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "&#8203;",
+          }
+        }
+      />
+    </div>
+    <input
+      autoFocus={false}
+      onAnimationStart={[Function]}
+      type="hidden"
+    />
+    <svg
+      aria-hidden="true"
+      className="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+      focusable="false"
+      role="presentation"
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M7 10l5 5 5-5z"
+      />
+    </svg>
+    <fieldset
+      aria-hidden={true}
+      className="PrivateNotchedOutline-root-83 MuiOutlinedInput-notchedOutline"
+    >
+      <legend
+        className="PrivateNotchedOutline-legendLabelled-85"
+      >
+        <span>
+          Select
+        </span>
+      </legend>
+    </fieldset>
+  </div>
+</div>
+`;
