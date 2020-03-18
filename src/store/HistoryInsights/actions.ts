@@ -1,6 +1,6 @@
 import { createAction, AnyAction } from '@reduxjs/toolkit';
 import API_CONFIG from '../../common/apiConfig';
-
+import fetchWrapper from '../../common/fetchWrapper';
 import { HistoryInsight } from './types';
 import { ThunkDispatch } from 'redux-thunk';
 import { numOfDaysBetween } from '../../common/utils';
@@ -14,18 +14,32 @@ const setHistoryInsights = createAction(
     payload: historyInsights
   })
 );
+const getHistoryInsightsFailed = createAction(
+  'historyInsights/failed',
+  (errorMessage?: string) => ({
+    payload: errorMessage
+  })
+);
 
 const fetchHistoryInsights = ({ fromCurrency, toCurrency }: any) => async (
   dispatch: ThunkDispatch<{}, {}, AnyAction>
 ) => {
   dispatch(getHistoryInsightsStarted());
   try {
-    const response = await fetch(
+    const response = await fetchWrapper<any>(
       buildHistoryInsightsRequestFromUrl(fromCurrency, toCurrency)
     );
 
-    dispatch(setHistoryInsights(buildHistoryInsightsFromResponse(response)));
-  } catch (e) {}
+    if (response['Note'] || response['Error message']) {
+      const { 'Error Message': message, Note: note } = response;
+
+      dispatch(getHistoryInsightsFailed(message || note));
+    } else {
+      dispatch(setHistoryInsights(buildHistoryInsightsFromResponse(response)));
+    }
+  } catch (e) {
+    dispatch(getHistoryInsightsFailed());
+  }
 };
 
 const buildHistoryInsightsRequestFromUrl = (from: string, to: string) =>
@@ -48,7 +62,7 @@ const buildHistoryInsightsFromResponse = (response: any): HistoryInsight[] => {
         } = dailyPrices;
 
         acc.push({
-          date: date,
+          date,
           open: Number(open),
           low: Number(low),
           high: Number(high),
@@ -66,5 +80,6 @@ export {
   fetchHistoryInsights,
   getHistoryInsights,
   setHistoryInsights,
-  getHistoryInsightsStarted
+  getHistoryInsightsStarted,
+  getHistoryInsightsFailed
 };

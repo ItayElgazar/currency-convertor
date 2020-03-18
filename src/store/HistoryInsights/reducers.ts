@@ -1,5 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { getHistoryInsightsStarted, setHistoryInsights } from './actions';
+import {
+  getHistoryInsightsStarted,
+  setHistoryInsights,
+  getHistoryInsightsFailed
+} from './actions';
 import { HistoryInsightsState } from './types';
 
 const initialState: HistoryInsightsState = {
@@ -24,6 +28,13 @@ const historyInsightsReducer = createReducer(initialState, {
     actions: {
       ...state.actions,
       isLoading: false
+    }
+  }),
+  [getHistoryInsightsFailed.toString()]: (state, { payload }) => ({
+    ...state,
+    actions: {
+      isLoading: false,
+      httpError: payload
     }
   })
 });
