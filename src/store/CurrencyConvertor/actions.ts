@@ -1,6 +1,6 @@
 import { createAction, AnyAction } from '@reduxjs/toolkit';
 import API_CONFIG from '../../common/apiConfig';
-
+import fetchWrapper from '../../common/fetchWrapper';
 import { ConvertEvent, Conversion } from './types';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -27,10 +27,10 @@ const convertCurrency = ({ fromCurrency, toCurrency }: ConvertEvent) => async (
 ) => {
   dispatch(convertCurrencyStarted());
   try {
-    const response = (await fetch(
+    const response = await fetchWrapper<any>(
       buildConvertRequestUrl(fromCurrency, toCurrency)
-    )) as any;
-    console.log(response);
+    );
+
     if (response['Error Message'] || response['Note']) {
       // the api server return 200 even if there is an error
       const { 'Error Message': message, Note } = response;
